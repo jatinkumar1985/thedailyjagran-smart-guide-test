@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from 'next/cache';
-import { ArticleCategoriesService, PromoBannerService, LatestArticleService, CategoryWidgetsService, ArticleByCategoryService, QuickLinksService, ArticleTagsHomeService } from './ListingService';
-import { ArticleAuthorDetailService, ArticleDetailService, ArticleProductsService } from './DetailService';
+import { ArticleCategoriesService, PromoBannerService, LatestArticleService, CategoryWidgetsService, ArticleByCategoryService, QuickLinksService, ArticleTagsHomeService, AuthorListService, ArticleAuthorListingService, CategoryListingService, ArticleSidebarService } from './ListingService';
+import { ArticleAuthorDetailPageService, ArticleAuthorDetailService, ArticleDetailService, ArticleProductsService } from './DetailService';
 
 export async function getCachedArticleCategories() {
   'use cache';
@@ -47,7 +47,7 @@ export async function getCachedPromoBanner(slug) {
   return data;
 }
 
-export async function getCachedLatestArticleService(pageNo = 0, limit = 10) {
+export async function getCachedLatestArticleService(pageNo = 1, limit = 10) {
   'use cache';
   
   cacheLife('minutes');                  // articles usually more fresh
@@ -57,7 +57,7 @@ export async function getCachedLatestArticleService(pageNo = 0, limit = 10) {
   return data;
 }
 
-export async function getCachedArticleByCategoryService({ categoryType, pageNo = 0, limit = 10 } = {}) {
+export async function getCachedArticleByCategoryService({ categoryType, pageNo = 1, limit = 10 } = {}) {
   'use cache';
   
   console.log('categoryType:', categoryType, 'pageNo:', pageNo, 'limit:', limit); // 👈 check this
@@ -106,5 +106,57 @@ export async function getCachedArticleAuthorDetailService({id}) {
   cacheTag(`author-detail-${id}`);
 
   const data = await ArticleAuthorDetailService({ id });
+  return data;
+}
+export async function getCachedArticleAuthorDetailPageService({slug}) {
+  'use cache';
+  
+  cacheLife('minutes');                  // articles usually more fresh
+  cacheTag(`author-detail-${slug}`);
+
+  const data = await ArticleAuthorDetailPageService({ slug });
+  return data;
+}
+export async function getCachedAuthorListService() {
+  'use cache';
+  
+  cacheLife('max');                  // articles usually more fresh
+  cacheTag(`get-author-list`);
+
+  const data = await AuthorListService();
+  return data;
+}
+
+export async function getCachedArticleAuthorListingService({ authorId, pageNo = 1, limit = 10 } = {}) {
+  'use cache';
+  
+  console.log('authorId:', authorId, 'pageNo:', pageNo, 'limit:', limit); // 👈 check this
+  
+  cacheLife('minutes');
+  cacheTag(`articles-list-${authorId}-${pageNo}`);
+
+  const data = await ArticleAuthorListingService({ authorId, pageNo, limit });
+  return data;
+}
+
+export async function getCachedCategoryListingService({ category, pageNo = 1, limit = 10 } = {}) {
+  'use cache';
+  
+  
+  cacheLife('minutes');
+  cacheTag(`article-by-category-${category}-${pageNo}`);
+
+  const data = await CategoryListingService({ category, pageNo, limit });
+  return data;
+}
+
+export async function getCachedArticleSidebarService({ category} = {}) {
+  'use cache';
+  
+  
+  cacheLife('minutes');
+  cacheTag(`article-sidebar-${category}`);
+
+  const data = await ArticleSidebarService({ category });
   return data;
 }

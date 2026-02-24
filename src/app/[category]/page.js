@@ -1,5 +1,6 @@
+import ArticleSideBar from "@/components/detail/ArticleSideBar";
 import CategoryListing from "@/components/landing/CategoryListing";
-import { getCachedArticleByCategoryService } from "@/services/CachedServices";
+import { getCachedArticleByCategoryService, getCachedLatestArticleService } from "@/services/CachedServices";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -35,17 +36,31 @@ async function CategoryContent({ paramsPromise }) {
 
   const title = category.charAt(0).toUpperCase() + category.slice(1).replaceAll('-', ' ');
 
+  const latestResult = await getCachedLatestArticleService(1,6);
+  const [latestData] = await Promise.all([latestResult]);
+  
   return (
     <>
-      <h1 className='text-xl lg:text-2xl uppercase font-black mb-2 lg:mb-4 flex justify-between items-center'>
-        <span className='relative before:absolute before:-top-1 before:left-0 before:w-full before:h-2/3 before:bg-yellow-300 before:z-[-10]'>
-          {title}
-        </span>
-      </h1>
-      <CategoryListing
-        initialPosts={CategoryListingData}
-        category={category}
-      />
+      <div className='max-w-7xl mx-4 lg:mx-auto py-4 lg:py-6'>
+        <div className='grid grid-cols-1 lg:grid-cols-7'>
+          <div className='col-span-5'>
+            <h1 className='text-xl lg:text-2xl uppercase font-black mb-2 lg:mb-4 flex justify-between items-center'>
+              <span className='relative before:absolute before:-top-1 before:left-0 before:w-full before:h-2/3 before:bg-yellow-300 before:z-[-10]'>
+                {title}
+              </span>
+            </h1>
+            <CategoryListing
+              initialPosts={CategoryListingData}
+              category={category}
+            />
+          </div>
+          <div className='col-span-2 lg:pl-8 pt-8 pb-2 lg:py-14'>
+            <div className='sticky top-10 mt-10 lg:mt-0'>
+              {latestData && <ArticleSideBar label="you may also like" listing={latestData} />}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
@@ -53,19 +68,8 @@ async function CategoryContent({ paramsPromise }) {
 export default function Page({ params }) {
   // ✅ Do NOT await params here — pass the Promise down
   return (
-    <div className='max-w-7xl mx-4 lg:mx-auto py-4 lg:py-6'>
-      <div className='grid grid-cols-1 lg:grid-cols-4'>
-        <div className='col-span-3'>
-          <Suspense fallback={<CategoryListingSkeleton />}>
-            <CategoryContent paramsPromise={params} />
-          </Suspense>
-        </div>
-        <div className='col-span-1 lg:pl-8 pt-8 pb-2 lg:py-14'>
-          <div className='sticky top-10 mt-10 lg:mt-0'>
-            {/* sidebar content */}
-          </div>
-        </div>
-      </div>
-    </div>
+    <Suspense fallback={<CategoryListingSkeleton />}>
+      <CategoryContent paramsPromise={params} />
+    </Suspense>
   );
 }

@@ -45,7 +45,7 @@ export default function HeroWidget({data, author}) {
             <ShortDescriptionWithToggle data={data} />
             <div className='flex justify-between'>
                 <div className="flex flex-col mb-4 lg:mb-8 uppercase">
-                    <p className="lg:text-[10px] text-[8px] text-gray-700">By : <GlobalLink href={`/authors/${author?.author_url}-${author?.id}`} className="font-bold text-gray-600 hover:text-red-600">{author?.first_name} {author?.last_name}</GlobalLink></p>
+                    <p className="lg:text-[10px] text-[8px] text-gray-700">By : <GlobalLink href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/authors/${author?.author_url}`} className="font-bold text-gray-600 hover:text-red-600">{author?.first_name} {author?.last_name}</GlobalLink></p>
                     <p className="lg:text-[10px] text-[8px] text-gray-700">Last Updated on : <span className="font-bold text-gray-600">{DDPub(latestDate)}</span></p>
                     <p className="lg:text-[10px] text-[8px] text-gray-700">Published on : <span className="font-bold text-gray-600">{data.publish_date_display}</span></p>
                 </div>
