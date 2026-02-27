@@ -29,7 +29,7 @@ export default function ProductTableWidget({ArticleDetail,ArticleProducts,tracki
         <>
             <ul className='overflow-hidden mb-6 lg:mb-8 rounded-lg bg-white border border-dashed border-slate-400 shadow-[0_0_30px_rgba(0,0,0,0.1)]'>
                 {ArticleProducts &&
-                    ArticleProducts.data.products.rows.slice(0, visibleRows).map((item, id) => {
+                    ArticleProducts?.data?.products?.rows?.slice(0, visibleRows).map((item, id) => {
                         const incrementedId = id + 1;
                         const formattedId = incrementedId < 10 ? `0${incrementedId}` : incrementedId;
                         // console.log(item);
@@ -37,7 +37,7 @@ export default function ProductTableWidget({ArticleDetail,ArticleProducts,tracki
                         /*const itemDecodedUrl = item?.amazon_url
                             ? Buffer.from(item.amazon_url, 'base64').toString('utf8')
                             : '';*/
-                        const itemDecodedUrl = item.amazon_url
+                        const itemDecodedUrl = item?.amazon_url
                         const amazon1url = itemDecodedUrl.split('?')[0];
 
                         const amazon = amazon1url.includes("www.myntra.com")
@@ -45,7 +45,7 @@ export default function ProductTableWidget({ArticleDetail,ArticleProducts,tracki
                             : amazon1url + tracking_tag;
 
                         // Calculate dynamic discount
-                        const discountPercentage = calculateDiscount(item.sales_price, item.price);
+                        const discountPercentage = calculateDiscount(item?.sales_price, item?.price);
                         
                         return (
                             <li key={id} className='flex py-5 flex-col relative border-b border-dashed border-gray-400 last:border-0'>
@@ -90,8 +90,8 @@ export default function ProductTableWidget({ArticleDetail,ArticleProducts,tracki
                                         {/* {items?.display_features != 0 ? <td className="py-4 text-base">{item.feature}</td> : ''} */}
                                     </div>
                                     <div className='flex flex-col items-end'>
-                                        {item.sales_price ? <span className="text-gray-500 line-through text-xs">₹{item.sales_price}</span> : ''}
-                                        {item.price ? <span className="text-red-600 font-bold text-xl mb-2">₹{item.price}</span> : ''}
+                                        {item?.sales_price ? <span className="text-gray-500 line-through text-xs">₹{item?.sales_price}</span> : ''}
+                                        {item?.price ? <span className="text-red-600 font-bold text-xl mb-2">₹{item?.price}</span> : ''}
                                         <GlobalLink
                                             href={amazon}
                                             className="cursor-pointer whitespace-nowrap text-[10px] uppercase font-bold px-4 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700"
@@ -143,7 +143,7 @@ export default function ProductTableWidget({ArticleDetail,ArticleProducts,tracki
                         );
                     })}
                 {ArticleProducts &&
-                    visibleRows < ArticleProducts.data.products.rows.length && (<li className='py-4 flex justify-center'><GlobalButton
+                    visibleRows < ArticleProducts?.data?.products?.rows?.length && (<li className='py-4 flex justify-center'><GlobalButton
                         onClick={handleShowMore}
                         className="cursor-pointer text-xs uppercase font-bold px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
                         eventName="cta_click"

@@ -24,9 +24,9 @@ export default function Footer() {
                         <p className='text-sm text-gray-200 mb-4'>For any feedback or complaint email to <GlobalLink href="mailto:compliant_gro@jagrannewmedia.com" className="text-gray-50 underline">compliant_gro@jagrannewmedia.com</GlobalLink></p>
                         <div className='lg:w-full'>
                             <div className='flex justify-start gap-2 mb-2 lg:mb-2'>
-                                <GlobalLink href="https://www.facebook.com/profile.php?id=61583792707837&sk=about" target="_blank" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
+                                <GlobalLink href="https://www.facebook.com/TheDailyJagran" target="_blank" rel="noreferrer" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
                                     <Image
-                                        src="/icons/facebook.svg"
+                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/facebook.svg`}
                                         alt="Facebook"
                                         width={16}
                                         height={16}
@@ -34,19 +34,9 @@ export default function Footer() {
                                         loading="lazy" // Explicit lazy loading
                                     />
                                 </GlobalLink>
-                                {/* <GlobalLink href="/" className="size-10 border border-white/50 rounded-lg flex items-center justify-center p-3 hover:bg-white/10">
+                                <GlobalLink href="https://www.instagram.com/thedailyjagran?igsh=cHk5MWI4OHg0NXFs" target="_blank" rel="noreferrer" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
                                     <Image
-                                        src="/icons/twitter.svg"
-                                        alt="Twitter"
-                                        width={16}
-                                        height={16}
-                                        className="w-7 h-7 cursor-pointer"
-                                        loading="lazy"
-                                    />
-                                </GlobalLink> */}
-                                <GlobalLink href="https://www.instagram.com/jagranreviews/" target="_blank" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
-                                    <Image
-                                        src="/icons/instagram.svg"
+                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/instagram.svg`}
                                         alt="Instagram"
                                         width={16}
                                         height={16}
@@ -54,32 +44,44 @@ export default function Footer() {
                                         loading="lazy" // Explicit lazy loading
                                     />
                                 </GlobalLink>
-                                {/* <GlobalLink href="/" className="size-10 border border-white/50 rounded-lg flex items-center justify-center p-2.5 hover:bg-white/10">
+                                <GlobalLink href="https://x.com/TheDailyJagran" target="_blank" rel="noreferrer" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
                                     <Image
-                                        src="/icons/youtube.svg"
-                                        alt="YouTube"
+                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/twitter.svg`}
+                                        alt="Instagram"
+                                        width={14}
+                                        height={14}
+                                        className="w-4 h-4 cursor-pointer"
+                                        loading="lazy" // Explicit lazy loading
+                                    />
+                                </GlobalLink>
+                                <GlobalLink href="https://www.youtube.com/@thedailyjagran" target="_blank" rel="noreferrer" className="size-10 border border-white/50 rounded-full flex items-center justify-center p-2.5 hover:bg-white/10">
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/youtube.svg`}
+                                        alt="Instagram"
                                         width={16}
                                         height={16}
                                         className="w-7 h-7 cursor-pointer"
-                                        loading="lazy"
+                                        loading="lazy" // Explicit lazy loading
                                     />
-                                </GlobalLink> */}
+                                </GlobalLink>
                             </div>
                             <p className='text-white mb-2 text-xs font-semibold'>Connect & Share</p>
-                            <p className='text-sm text-gray-200 lg:mb-4'>Expert-curated deals you can trust, refreshed regularly - <GlobalLink href="/deals" className="text-gray-50 underline font-bold">Check Deals</GlobalLink></p>
+                            {/* <p className='text-sm text-gray-200 lg:mb-4'>Expert-curated deals you can trust, refreshed regularly - <GlobalLink href="/deals" className="text-gray-50 underline font-bold">Check Deals</GlobalLink></p> */}
                         </div>
                     </div>
                     <div className='col-span-3 lg:col-span-2 lg:flex gap-10'>
                         <div className='flex flex-wrap lg:flex-col gap-2 lg:gap-4 mb-2 lg:w-52'>
-                            <GlobalLink href="/about-us" className="text-sm text-gray-400 hover:text-white">About Us</GlobalLink>
-                            <GlobalLink href="/contact-us" className="text-sm text-gray-400 hover:text-white">Contact Us</GlobalLink>
-                            <GlobalLink href="/terms-and-conditions" className="text-sm text-gray-400 hover:text-white">Terms & Conditions</GlobalLink>
-                            <GlobalLink href="/cookie-policy" className="text-sm text-gray-400 hover:text-white">Cookie Policy</GlobalLink>
-                            <GlobalLink href="/affiliate-disclaimer" className="text-sm text-gray-400 hover:text-white">Affiliate Disclaimer</GlobalLink>
-                            <GlobalLink href="/advertise-with-us" className="text-sm text-gray-400 hover:text-white">Advertise With Us</GlobalLink>
-                            <GlobalLink href="/dnpa-code-of-conduct-compliance-statement" className="text-sm text-gray-400 hover:text-white">DNPA Code of Conduct Compliance Statement</GlobalLink>
-                            <GlobalLink href="/privacy-policy" className="text-sm text-gray-400 hover:text-white">Privacy Policy</GlobalLink>
-                            <GlobalLink href="/correction-policy" className="text-sm text-gray-400 hover:text-white">Correction Policy</GlobalLink>
+                           
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="About us" href="/about-us" rel="" aria-label="About us">About us</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Advertise with Us" href="/advertise-withus" rel="noopener noreferrer" target="_blank" aria-label="Advertise with Us">Advertise with Us</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Book Print Ad" href="https://bookads.jagran.com" rel="noopener noreferrer" target="_blank" aria-label="Book Print Ad">Book Print Ad</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Contact us" href="/contact-us" rel="noopener noreferrer" target="_blank" aria-label="Contact us">Contact us</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Privacy Policy" href="/privacy-policy" rel="" aria-label="Privacy Policy">Privacy Policy</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Disclaimer" href="/terms-conditions" rel="" aria-label="Disclaimer">Disclaimer</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="This website follows the DNPA’s code of conduct" href="/dnpa-code-of-ethics-for-digital-news-websites" rel="" aria-label="This website follows the DNPA’s code of conduct">This website follows the DNPA’s code of conduct</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Sitemap" href="/smart-guide/sitemap" rel="" aria-label="Sitemap">Sitemap</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Authors" href="/smart-guide/authors" target="_self" aria-label="Authors">Authors</GlobalLink>
+                            <GlobalLink className="text-sm text-gray-400 hover:text-white" title="Feeds" href="/smart-guide/rss" target="_self" aria-label="Feeds">Feeds</GlobalLink>
                         </div>
                         <div className='flex flex-wrap lg:flex-col gap-2 lg:gap-4 mb-2 lg:w-52'>
                             <GlobalLink href="https://www.jagran.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Jagran Hindi</GlobalLink>
@@ -88,10 +90,10 @@ export default function Footer() {
                             <GlobalLink href="https://www.marathijagran.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Jagran Marathi</GlobalLink>
                             <GlobalLink href="https://www.onlymyhealth.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Only My Health</GlobalLink>
                             <GlobalLink href="https://www.jagranjosh.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Jagran Josh</GlobalLink>
-                        </div>
-                        <div className='flex flex-wrap lg:flex-col gap-2 lg:gap-4 mb-2 lg:w-52'>
                             <GlobalLink href="https://www.naidunia.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Nai Dunia</GlobalLink>
                             <GlobalLink href="https://www.inextlive.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Inextlive</GlobalLink>
+                        </div>
+                        <div className='flex flex-wrap lg:flex-col gap-2 lg:gap-4 mb-2 lg:w-52'>
                             <GlobalLink href="https://www.herzindagi.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Her Zindagi</GlobalLink>
                             <GlobalLink href="https://www.punjabijagran.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Punjabi Jagran</GlobalLink>
                             <GlobalLink href="https://www.vishvasnews.com/" target="_blank" className="text-sm text-gray-400 hover:text-white">Vishvas News</GlobalLink>

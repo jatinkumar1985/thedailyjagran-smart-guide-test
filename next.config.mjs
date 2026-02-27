@@ -21,7 +21,8 @@ const nextConfig = {
     },
     async rewrites() {
         return [
-            
+            { source: '/rss', destination: '/sitemap/rss', },
+            { source: '/rss/:category.xml', destination: '/sitemap/rss-category', },
         ];
     },
     async headers() {

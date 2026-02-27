@@ -3,7 +3,7 @@ import GlobalLink from '../global/GlobalLink'
 
 export default function Breadcrumb({breadcrumb}) {
     return (
-        <nav aria-label="Breadcrumb" className="flex pt-0 lg:pt-6 pb-4 lg:pb-10">
+        <nav aria-label="Breadcrumb" className="flex pb-4 lg:pb-8">
           <ol role="list" className="w-full flex items-center space-x-2">
             <li>
               <div>

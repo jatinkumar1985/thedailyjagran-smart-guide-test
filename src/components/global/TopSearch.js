@@ -9,7 +9,7 @@ import GlobalLink from './GlobalLink';
 
 export default function TopSearch({ TopSearches }) {
   return (
-    <div className="mx-auto max-w-7xl mb-6">
+    <div className="mx-auto max-w-7xl px-4 lg:px-0">
       <div className="flex items-center gap-4 py-3">
         {/* Label - fixed width / shrink-0 */}
         <div className="text-sm font-semibold text-gray-800 shrink-0">
@@ -36,7 +36,7 @@ export default function TopSearch({ TopSearches }) {
             {TopSearches?.data?.tags["top-searches"]?.map((item, index) => (
               <SwiperSlide key={index} className="w-auto!">
                 <GlobalLink
-                  href={item.article_url}
+                  href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/${item.article_url}`}
                   className="inline-flex items-center rounded-full bg-gray-100 px-3.5 py-1.5 text-xs uppercase font-medium text-gray-800 hover:bg-gray-200 transition-colors whitespace-nowrap"
                   eventName="top_searches_tab_click"
                   data={{

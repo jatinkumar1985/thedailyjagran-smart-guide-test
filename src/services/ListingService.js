@@ -40,6 +40,28 @@ export async function ArticleTagsHomeService(params) {
     return null;
   }
 }
+export async function ArticleTagsPageService(params) {
+  const { slug } = params || {};
+  try {
+    const apiPath = `${process.env.NEXT_PUBLIC_MODE_BASE_API}get-article-tags/top-searches/${slug}`;
+    
+    const response = await fetch(apiPath, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SITE_TOKEN}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('LatestArticleService error:', error);
+    return null;
+  }
+}
 export async function QuickLinksService(params) {
   try {
     const apiPath = `${process.env.NEXT_PUBLIC_MODE_BASE_API}get-article-tags/quick-links`;
@@ -238,6 +260,30 @@ export async function ArticleSidebarService(params) {
   try {
     const apiPath = `${process.env.NEXT_PUBLIC_MODE_BASE_API}get-article-sidebar/${category}`;
     console.log('Fetching URL:', apiPath);
+    const response = await fetch(apiPath, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SITE_TOKEN}`,
+      },
+      
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('LatestArticleService error:', error);
+    return null;
+  }
+}
+export async function SearchArticleService(params) {
+  const { keyword, pageNo = 0, limit = 10 } = params || {};
+
+  try {
+    const apiPath = `${process.env.NEXT_PUBLIC_MODE_BASE_API}search-article/${keyword}/${pageNo}/${limit}`;
+    // console.log('Fetching URL:', apiPath);
     const response = await fetch(apiPath, {
       method: 'GET',
       headers: {

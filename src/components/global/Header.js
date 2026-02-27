@@ -4,13 +4,16 @@ import GlobalLink from './GlobalLink';
 import GlobalButton from './GlobalButton';
 import Image from 'next/image';
 import CommonDialogSideBar from './CommonDialogSideBar';
+import CommonSearchModal from './CommonSearchModal';
 
 export default function Header({header}) {  
+    const [searchOpen, setSearchOpen] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);  
     return (
         <>
+            <CommonSearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
             <header>
-                <div className='flex justify-between items-center max-w-7xl mx-auto py-4'>
+                <div className='flex justify-between items-center max-w-7xl mx-auto px-4 lg:px-0 pt-2 lg:py-4'>
                     <div className='flex justify-between w-full'>
                         <div className='w-48 flex items-center'>
                             <GlobalButton
@@ -42,9 +45,31 @@ export default function Header({header}) {
                                             </div> */}
                             </GlobalLink>
                         </div>
-                        <div className='w-48 flex items-center'>
-                            <div className="w-full grid grid-cols-1">
-                                <input
+                        <div className='w-48 lg:w-48 flex items-center'>
+                            <div className="w-full flex justify-end">
+                                <GlobalButton
+                                    onClick={() => setSearchOpen(true)}
+                                    className="hidden lg:flex group bg-white border border-gray-400 hover:border-gray-900 text-gray-900 cursor-pointer focus:outline-none  rounded-full items-center text-sm lg:w-auto px-2 lg:px-5 py-2 lg:py-3 transition-all"
+                                    aria-label="Open search modal"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="pointer-events-none col-start-1 row-start-1 mr-3 size-5 self-center justify-self-end text-gray-400 sm:size-4" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                                    </svg>
+                                    {/* <MagnifyingGlassIcon className="size-5 lg:mr-2 text-gray-600" /> */}
+                                    <span className="text-gray-500">Search Article...</span>
+                                </GlobalButton>
+                                <GlobalButton
+                                    onClick={() => setSearchOpen(true)}
+                                    className="lg:hidden flex w-9 h-9 items-center justify-center group bg-white border border-gray-400 hover:border-gray-900 text-gray-900 cursor-pointer focus:outline-none rounded-full text-sm transition-all"
+                                    aria-label="Open search modal"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="pointer-events-none col-start-1 row-start-1 size-4 self-center justify-self-end text-gray-400 sm:size-4" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                                    </svg>
+                                    {/* <MagnifyingGlassIcon className="size-5 lg:mr-2 text-gray-600" /> */}
+                                    {/* <span className="text-gray-500">Search Article...</span> */}
+                                </GlobalButton>
+                                {/* <input
                                     name="search"
                                     type="text"
                                     placeholder="search..."
@@ -52,14 +77,14 @@ export default function Header({header}) {
                                 />
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="pointer-events-none col-start-1 row-start-1 mr-3 size-5 self-center justify-self-end text-gray-400 sm:size-4" viewBox="0 0 16 16">
                                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                                </svg>
+                                </svg> */}
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className='overflow-scroll lg:h-auto lg:overflow-visible no-scrollbar list-none border-b border-gray-200'>
-                    <div className='max-w-7xl mx-auto py-4'>
-                        <div className='flex items-center gap-8 whitespace-nowrap'>
+                    <div className='max-w-7xl mx-auto py-4 px-4 lg:px-0'>
+                        <div className='flex items-center gap-4 lg:gap-8 whitespace-nowrap'>
                             <GlobalLink
                                 href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}`}
                                 eventName="top_navigation"

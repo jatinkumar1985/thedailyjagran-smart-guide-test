@@ -1,7 +1,7 @@
 // app/article/[slug]/page.js
 
 import { Suspense } from 'react';
-import { getCachedArticleDetailService, getCachedArticleAuthorDetailService, getCachedArticleProductsService, getCachedCategoryListingService, getCachedArticleSidebarService } from '@/services/CachedServices';
+import { getCachedArticleDetailService, getCachedArticleAuthorDetailService, getCachedArticleProductsService, getCachedCategoryListingService, getCachedArticleSidebarService, getCachedArticleTagsPage } from '@/services/CachedServices';
 import Breadcrumb from '@/components/detail/Breadcrumb';
 import Faq from '@/components/detail/Faq';
 import HeroWidget from '@/components/detail/HeroWidget';
@@ -10,6 +10,49 @@ import ProductTableWidget from '@/components/detail/ProductTableWidget';
 import RelatedProducts from '@/components/detail/RelatedProducts';
 import ArticleSideBar from '@/components/detail/ArticleSideBar';
 import Schema from '@/components/detail/Schema';
+import TemplateCard from '@/components/detail/TemplateCard';
+import * as ReactDOM from "react-dom";
+import DataLayer from '@/components/detail/DataLayer';
+import { notFound } from 'next/navigation';
+import TopSearch from '@/components/global/TopSearch';
+import LazyMedia from '@/components/global/LazyMedia';
+
+export async function generateMetadata({ params }) {
+    const category = (await params).category;
+    const slug = (await params).slug;
+    const id = slug.split('-').pop().trim();
+    const data = await getCachedArticleDetailService({ id });
+    const Meta = data?.data.article || {};
+    
+    const mobile  = `${process.env.NEXT_PUBLIC_MODE_IMAGE_PATH}${Meta.mobile_image}`;
+    // const desktop = `${process.env.NEXT_PUBLIC_MODE_IMAGE_PATH}${Meta.big_image}`;
+
+    // Preload with media — works in Next.js 15
+    ReactDOM.preload(mobile,  { as: "image", media: "(max-width: 1023px)"  });
+    // ReactDOM.preload(desktop, { as: "image", media: "(min-width: 1024px)" });
+    return {
+        title: Meta?.meta_title,
+        description: Meta?.meta_description,
+        keywords: Meta?.meta_keyword,
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                'max-image-preview': 'large',
+            },
+        },
+        alternates: {
+            canonical: `${process.env.NEXT_PUBLIC_MODE_BASE_URL}/${category}/${Meta?.page_url}-${Meta?.id}`,
+        },
+        openGraph: {
+            title: Meta?.meta_title,
+            description: Meta?.meta_description,
+            url: `${process.env.NEXT_PUBLIC_MODE_BASE_URL}/${category}/${Meta?.page_url}-${Meta?.id}`,
+            images: `${process.env.NEXT_PUBLIC_MODE_IMAGE_PATH}${Meta?.big_image}`,
+            siteName: process.env.NEXT_PUBLIC_DOMIN_NAME,
+        },
+    };
+}
 
 async function ArticleContent({ params }) {
     const { slug, category } = await params;
@@ -19,7 +62,9 @@ async function ArticleContent({ params }) {
         getCachedArticleDetailService({ id }),
         getCachedArticleProductsService({ id }),
     ]);
-
+    if(!articleData){
+        notFound()
+    }
     const data = articleData?.data?.article;
 
     const authorData = await getCachedArticleAuthorDetailService({ id: data?.author_id });
@@ -27,31 +72,61 @@ async function ArticleContent({ params }) {
     
     const relatedArticleResult = await getCachedCategoryListingService({ category: category, pageNo:1, limit:8 });
     const articleSidebarResult = await getCachedArticleSidebarService({ category: category, pageNo:1, limit:6 });
-    const [relatedArticleData,articleSidebarData] = await Promise.all([relatedArticleResult,articleSidebarResult]);  
+    const articleTagsPageResult = await getCachedArticleTagsPage({slug:category});
+    const [relatedArticleData,articleSidebarData,articleTagsPageData] = await Promise.all([relatedArticleResult,articleSidebarResult,articleTagsPageResult]);  
     // console.log(articleSidebarData,'articleSidebarData');
     const trackingTagString = author?.authorData?.tracking_tag;
     const trackingTag = trackingTagString && JSON.parse(trackingTagString);
     const tracking_tag = (trackingTag && trackingTag[process.env.NEXT_PUBLIC_WMS_PRODUCT_ID]) || process.env.NEXT_PUBLIC_DEFAULT_TAG;
-
+    // console.log(ArticleProducts,'ArticleProducts');
+    const wrapTablesWithScrollDiv = (htmlString) => {
+        if (!htmlString) return '';
+        return htmlString
+            .replace(/<table([^>]*)>/gi, '<div class="overflow-x-auto"><table$1>')
+            .replace(/<\/table>/gi, '</table></div>');
+    };
     return (
         <>
+            {/* <ArticleSkeleton /> */}
             <Schema schema={data} schemaProduct={ArticleProducts?.data?.products} author={author} />
-            <div className='max-w-7xl mx-4 lg:mx-auto py-6'>
+            <DataLayer datalayer={data} author={author} />
+            {articleTagsPageData&&<TopSearch TopSearches={articleTagsPageData} />}
+            <div className='max-w-7xl mx-4 lg:mx-auto pt-6 lg:pt-6'>
                 <Breadcrumb breadcrumb={data} />
                 <HeroWidget data={data} author={author} />
                 <div className='grid grid-cols-4 lg:mb-20'>
                     <div className='col-span-4 lg:col-span-3 lg:pr-14'>
-                        <div className="prose max-w-none article-body mb-8" dangerouslySetInnerHTML={{ __html: data?.body }} />
-                        <ProductTableWidget
+                        <div className="prose max-w-none article-body mb-8" dangerouslySetInnerHTML={{ __html: wrapTablesWithScrollDiv(data?.body) }} />
+                        {ArticleProducts?.data?.template_type==="default"&&<ProductTableWidget
                             ArticleDetail={data}
                             ArticleProducts={ArticleProducts}
                             tracking_tag={"?tag=" + tracking_tag}
-                        />
-                        <Products
+                        />}
+                        <div className='bg-gray-100 rounded-xl p-4 lg:p-6 mb-6 border border-dashed border-gray-300'>
+                            <div className='flex gap-2'>
+                                <div className='w-5 h-5'>
+                                    <LazyMedia
+                                        type="image"
+                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/secure-shield.svg`}
+                                        alt="Vetted Options"
+                                        width={20}
+                                        height={20}
+                                        className={`object-cover`}
+                                    />
+                                </div>
+                                <span className='font-bold'>Vetted Options</span>
+                            </div>
+                            <p className='text-sm'>We thoroughly evaluate every product through a combination of <a href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/our-editorial-standards`} className='text-red-700 hover:underline' target="_blank">hands-on research</a> and <a href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/how-we-evaluate-products`} className='text-red-700 hover:underline' target="_blank">insights</a> from reputable industry sources.</p>
+                        </div>
+                        {ArticleProducts?.data?.template_type==="default"&&<Products
                             ArticleProducts={ArticleProducts}
                             tracking_tag={"?tag=" + tracking_tag}
-                        />
-                        <div className="prose max-w-none article-body mb-8" dangerouslySetInnerHTML={{ __html: data?.bottom_of_article }} />
+                        />}
+                        {ArticleProducts?.data?.template_type==="template1"&&<TemplateCard
+                            ArticleCard={ArticleProducts?.data?.products}
+                            tracking_tag={"?tag=" + tracking_tag}
+                        />}
+                        <div className="prose max-w-none article-body mb-8" dangerouslySetInnerHTML={{ __html: wrapTablesWithScrollDiv(data?.bottom_of_article) }} />
                         <div className="text-sm leading-6 mb-6 mt-6">
                             <p>
                                 <strong>Disclaimer:</strong>{' '}
@@ -77,11 +152,32 @@ async function ArticleContent({ params }) {
 function ArticleSkeleton() {
     return (
         <div className='max-w-7xl mx-4 lg:mx-auto py-6 animate-pulse'>
-            <div className='h-4 bg-gray-200 rounded w-1/3 mb-6' />
-            <div className='h-8 bg-gray-200 rounded w-2/3 mb-4' />
-            <div className='space-y-3'>
-                {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className='h-4 bg-gray-200 rounded' />
+            <div className='flex gap-2 mb-4'>
+                <div className='h-4 w-4 bg-gray-200 rounded' />
+                <div className='h-4 bg-gray-200 rounded w-1/2' />
+            </div>
+            <div className='h-6 bg-gray-200 rounded w-full mb-2' />
+            <div className='h-6 bg-gray-200 rounded w-4/6 mb-4' />
+            <div className='space-y-2 mb-4'>
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className='h-3 w-full bg-gray-200 rounded' />
+                ))}
+            </div>
+            <div className='flex justify-between items-center mb-4'>
+                <div className='space-y-1'>
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className='h-2 w-32 bg-gray-200 rounded' />
+                    ))}
+                </div>
+                <div className='flex gap-2 shrink-0'>
+                    <div className='h-9 w-24 bg-gray-200 rounded-full' />
+                    <div className='h-9 w-9 bg-gray-200 rounded-full' />
+                </div>
+            </div>
+            <div className='aspect-video bg-gray-200 rounded-xl w-full mb-4' />
+            <div className='space-y-2 mb-4'>
+                {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className='h-3 w-full bg-gray-200 rounded' />
                 ))}
             </div>
         </div>

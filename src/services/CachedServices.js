@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from 'next/cache';
-import { ArticleCategoriesService, PromoBannerService, LatestArticleService, CategoryWidgetsService, ArticleByCategoryService, QuickLinksService, ArticleTagsHomeService, AuthorListService, ArticleAuthorListingService, CategoryListingService, ArticleSidebarService } from './ListingService';
-import { ArticleAuthorDetailPageService, ArticleAuthorDetailService, ArticleDetailService, ArticleProductsService } from './DetailService';
+import { ArticleCategoriesService, PromoBannerService, LatestArticleService, CategoryWidgetsService, ArticleByCategoryService, QuickLinksService, ArticleTagsHomeService, AuthorListService, ArticleAuthorListingService, CategoryListingService, ArticleSidebarService, ArticleTagsPageService, SearchArticleService } from './ListingService';
+import { ArticleAuthorDetailPageService, ArticleAuthorDetailService, ArticleDetailService, ArticleProductsService, PageMetaService } from './DetailService';
 
 export async function getCachedArticleCategories() {
   'use cache';
@@ -18,6 +18,15 @@ export async function getCachedArticleTagsHome() {
   cacheTag(`article-tags-home`);
 
   const data = await ArticleTagsHomeService();
+  return data;
+}
+export async function getCachedArticleTagsPage({slug}) {
+  'use cache';
+  
+  cacheLife('max');                  // articles usually more fresh
+  cacheTag(`article-tags-${slug}`);
+
+  const data = await ArticleTagsPageService({slug});
   return data;
 }
 export async function getCachedQuickLinks() {
@@ -158,5 +167,27 @@ export async function getCachedArticleSidebarService({ category} = {}) {
   cacheTag(`article-sidebar-${category}`);
 
   const data = await ArticleSidebarService({ category });
+  return data;
+}
+
+export async function getCachedPageMetaService({ slug} = {}) {
+  'use cache';
+  
+  
+  cacheLife('max');
+  cacheTag(`get_meta-${slug}`);
+
+  const data = await PageMetaService({ slug });
+  return data;
+}
+
+export async function getCachedSearchArticleService({ keyword} = {}) {
+  'use cache';
+  
+  
+  cacheLife('minutes');
+  cacheTag(`search-article-${keyword}`);
+
+  const data = await SearchArticleService({ keyword });
   return data;
 }

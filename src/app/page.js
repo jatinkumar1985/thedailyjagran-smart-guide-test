@@ -2,9 +2,39 @@ import { Suspense } from 'react';
 import PromoBanner from "@/components/global/PromoBanner";
 import ArticleWidget from "@/components/home/ArticleWidget";
 import LatestNews from "@/components/home/LatestNews";
-import { getCachedPromoBanner, getCachedLatestArticleService, getCachedArticleByCategoryService, getCachedArticleTagsHome, } from "@/services/CachedServices";
+import { getCachedPromoBanner, getCachedLatestArticleService, getCachedArticleByCategoryService, getCachedArticleTagsHome, getCachedPageMetaService, } from "@/services/CachedServices";
 import TopSearch from '@/components/global/TopSearch';
 
+export async function generateMetadata(){
+  const MetaApi = getCachedPageMetaService({slug:'home-page'});
+  const [MetaResult] = await Promise.allSettled([MetaApi]);
+  // console.log(MetaResult);
+  
+  const MetaData = MetaResult.status === 'fulfilled' ? MetaResult.value : null;
+  const Meta = MetaData?.data[0] || {};
+  return {
+    title: Meta.meta_title,
+    description: Meta.meta_description,
+    keywords: Meta.meta_keyword,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        'max-image-preview': 'large',
+      },
+    },
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_MODE_BASE_URL}/`,
+    },
+    openGraph: {
+      title: Meta.meta_title,
+      description: Meta.meta_description,
+      url: `${process.env.NEXT_PUBLIC_MODE_BASE_URL}`,
+      images: process.env.NEXT_PUBLIC_BASE_OG_IMAGE,
+      siteName:process.env.NEXT_PUBLIC_DOMIN_NAME,
+    },
+  };
+}
 // ──────────────────────────────────────────────
 //  Configuration – easy to extend / reorder
 // ──────────────────────────────────────────────
@@ -55,14 +85,13 @@ export default async function Home() {
     <>
       <TopSearch TopSearches={topSearchesData} />
       {latestData && <LatestNews LatestNewsData={latestData} />}
-
       {promoData && (
         <Suspense fallback={ <div className="h-64 bg-gray-100 animate-pulse rounded-xl mx-4 lg:mx-auto max-w-7xl mt-2 lg:mt-8" /> } >
           <PromoBanner PromoBannerData={promoData} />
         </Suspense>
       )}
 
-      {widgets.map(({ config, data }, idx) =>
+      {widgets&&widgets.map(({ config, data }, idx) =>
         data ? (
           <ArticleWidget key={`${config.category}-${idx}`} listing={data} label={config.label} />
         ) : null

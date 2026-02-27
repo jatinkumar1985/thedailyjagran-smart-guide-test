@@ -4,6 +4,7 @@ import DataLayer from '@/components/author/DataLayer';
 import Schema from '@/components/author/Schema';
 import GlobalLink from '@/components/global/GlobalLink';
 import { getCachedArticleAuthorDetailPageService, getCachedArticleAuthorListingService } from '@/services/CachedServices';
+import { notFound, permanentRedirect } from 'next/navigation';
 import React, { Suspense } from 'react'
 
 export async function generateMetadata({ params }) {
@@ -53,12 +54,19 @@ export async function generateMetadata({ params }) {
 
 async function AuthorContent({params}) {
     const slug = (await params).slug;
+    // ✅ ADD THIS: Normalize underscores to hyphens and redirect
+    if (slug.includes('_')) {
+        const normalizedSlug = slug.replace(/_/g, '-');
+        permanentRedirect(`/authors/${normalizedSlug}`);
+    }
     const ArticleAuthorDetailApi = getCachedArticleAuthorDetailPageService({ slug:slug });
     
     const [ArticleAuthorDetailData] = await Promise.all([ArticleAuthorDetailApi]);
     const authorID = ArticleAuthorDetailData?.data?.authorData?.id
     const authorUrl = ArticleAuthorDetailData?.data?.authorData?.author_url
     const cleanSlug = slug.replace(/-\d+$/, '');
+    // console.log(ArticleAuthorDetailData,'ArticleAuthorDetailData');
+    
     if (!ArticleAuthorDetailData?.data) {
         notFound()
     }
@@ -70,7 +78,7 @@ async function AuthorContent({params}) {
     const ArticleAuthorListingApi = getCachedArticleAuthorListingService({ authorId:authorID, pageNo: '1', limit: '18' });
     const [ArticleAuthorListingData] = await Promise.all([ArticleAuthorListingApi]);
     
-    console.log(ArticleAuthorListingData,'ArticleAuthorListingData');
+    // console.log(ArticleAuthorListingData,'ArticleAuthorListingData');
     
     return (
         <>
@@ -121,10 +129,20 @@ async function AuthorContent({params}) {
 function AuthorSkeleton() {
     return (
         <div className='max-w-7xl mx-4 lg:mx-auto py-6 animate-pulse'>
-            <div className='h-4 bg-gray-200 rounded w-1/3 mb-6' />
-            <div className='h-8 bg-gray-200 rounded w-2/3 mb-4' />
+            <div className='flex gap-2 mb-4'>
+                <div className='h-4 w-4 bg-gray-200 rounded' />
+                <div className='h-4 bg-gray-200 rounded w-18' />
+            </div>
+            <div className='flex gap-6 mb-8 items-end'>
+                <div className='shrink-0 w-24 h-36 bg-gray-200 rounded'></div>
+                <div className='w-full'>
+                    <div className='h-8 bg-gray-200 rounded w-2/3 mb-2' />
+                    <div className='h-4 bg-gray-200 rounded w-2/4 mb-4' />
+                    <div className='h-4 bg-gray-200 rounded w-full mb-2' />
+                </div>
+            </div>
             <div className='space-y-3'>
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: 8 }).map((_, i) => (
                     <div key={i} className='h-4 bg-gray-200 rounded' />
                 ))}
             </div>
