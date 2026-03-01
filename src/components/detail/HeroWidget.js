@@ -69,7 +69,11 @@ export default function HeroWidget({data, author}) {
             </div>
             <figure className="mb-4 lg:mb-8">
                 <picture>
-                    <source media="(min-width: 1024px)" srcSet={desktopImageUrl} />
+                    <source 
+                        media="(min-width: 1024px)" 
+                        srcSet={desktopImageUrl} 
+                        fetchPriority="high"
+                    />
                     <img
                         src={mobileImageUrl}
                         alt={data?.title}
