@@ -1,5 +1,3 @@
-// app/article/[slug]/page.js
-
 import { Suspense } from 'react';
 import { getCachedArticleDetailService, getCachedArticleAuthorDetailService, getCachedArticleProductsService, getCachedCategoryListingService, getCachedArticleSidebarService, getCachedArticleTagsPage } from '@/services/CachedServices';
 import Breadcrumb from '@/components/detail/Breadcrumb';
@@ -15,7 +13,8 @@ import * as ReactDOM from "react-dom";
 import DataLayer from '@/components/detail/DataLayer';
 import { notFound } from 'next/navigation';
 import TopSearch from '@/components/global/TopSearch';
-import LazyMedia from '@/components/global/LazyMedia';
+import TrusCardTop from '@/components/detail/TrusCardTop';
+import TrusCardBottom from '@/components/detail/TrusCardBottom';
 
 export async function generateMetadata({ params }) {
     const category = (await params).category;
@@ -96,28 +95,14 @@ async function ArticleContent({ params }) {
                 <HeroWidget data={data} author={author} />
                 <div className='grid grid-cols-4 lg:mb-20'>
                     <div className='col-span-4 lg:col-span-3 lg:pr-14'>
+                        {ArticleProducts?.data?.template_type==="template1"&&<TrusCardTop />}
                         <div className="prose max-w-none article-body mb-8" dangerouslySetInnerHTML={{ __html: wrapTablesWithScrollDiv(data?.body) }} />
                         {ArticleProducts?.data?.template_type==="default"&&<ProductTableWidget
                             ArticleDetail={data}
                             ArticleProducts={ArticleProducts}
                             tracking_tag={"?tag=" + tracking_tag}
                         />}
-                        <div className='bg-gray-100 rounded-xl p-4 lg:p-6 mb-6 border border-dashed border-gray-300'>
-                            <div className='flex gap-2'>
-                                <div className='w-5 h-5'>
-                                    <LazyMedia
-                                        type="image"
-                                        src={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/secure-shield.svg`}
-                                        alt="Vetted Options"
-                                        width={20}
-                                        height={20}
-                                        className={`object-cover`}
-                                    />
-                                </div>
-                                <span className='font-bold'>Vetted Options</span>
-                            </div>
-                            <p className='text-sm'>We thoroughly evaluate every product through a combination of <a href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/our-editorial-standards`} className='text-red-700 hover:underline' target="_blank">hands-on research</a> and <a href={`${process.env.NEXT_PUBLIC_MODE_BASE_URL}/how-we-evaluate-products`} className='text-red-700 hover:underline' target="_blank">insights</a> from reputable industry sources.</p>
-                        </div>
+                        {ArticleProducts?.data?.template_type==="default"&&<TrusCardTop />}
                         {ArticleProducts?.data?.template_type==="default"&&<Products
                             ArticleProducts={ArticleProducts}
                             tracking_tag={"?tag=" + tracking_tag}
@@ -135,6 +120,7 @@ async function ArticleContent({ params }) {
                                 </em>
                             </p>
                         </div>
+                        {ArticleProducts?.data?.template_type==="template1"&&<TrusCardBottom />}
                         <div className='mb-6 lg:mb-0'>{data && <Faq Faq={data} />}</div>
                     </div>
                     <div className='col-span-4 lg:col-span-1'>
