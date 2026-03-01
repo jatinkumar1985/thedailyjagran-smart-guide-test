@@ -101,7 +101,7 @@ export default async function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://img.jagranreviews.com/" />
         <link rel="preconnect" href="https://img.jagranreviews.com/" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="preconnect" href="https://www.google-analytics.com" />
+        {/* <link rel="preconnect" href="https://www.google-analytics.com" /> */}
         {/* <link rel="preconnect" href="https://sb.scorecardresearch.com" /> */}
       </head>
       <body className={`${inter.variable} antialiased`}>
