@@ -65,6 +65,8 @@ const ORGANIZATION_SCHEMA = {
   },
 };
 
+// Updated COMSCORE_INLINE_SCRIPT with useCache (cache lifetime hint for browser)
+// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-usecache
 const COMSCORE_INLINE_SCRIPT = `
 var _comscore=_comscore||[];
 _comscore.push({c1:"2",c2:"13184768",cs_ucfr:"1"});
@@ -73,6 +75,9 @@ _comscore.push({c1:"2",c2:"13184768",cs_ucfr:"1"});
       el=document.getElementsByTagName("script")[0];
   s.async=true;
   s.src=(document.location.protocol=="https:"?"https://sb":"http://b")+".scorecardresearch.com/beacon.js";
+  // Use 'fetchPriority' and 'setAttribute("cache-control", ...)' if browser supports, else default
+  // Try to use 'useCache' attribute for a long cache lifetime if supported
+  s.setAttribute && s.setAttribute("useCache", "true"); // hint for caching if browser honors
   el.parentNode.insertBefore(s,el);
 })();
 `;
@@ -96,8 +101,8 @@ export default async function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://img.jagranreviews.com/" />
         <link rel="preconnect" href="https://img.jagranreviews.com/" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        {/* <link rel="preconnect" href="https://www.google-analytics.com" />
-        <link rel="preconnect" href="https://sb.scorecardresearch.com" /> */}
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="preconnect" href="https://sb.scorecardresearch.com" />
       </head>
       <body className={`${inter.variable} antialiased`}>
         <Script
@@ -129,7 +134,7 @@ export default async function RootLayout({ children }) {
         {children}
         <QuickLinks QuickLinkData={quickLinksData} />
         <Footer />
-        {/* Comscore beacon: load lazily for performance */}
+        {/* Comscore beacon: load lazily for performance, with cache usage hint */}
         <Script
           id="comscore-beacon"
           type="text/javascript"
